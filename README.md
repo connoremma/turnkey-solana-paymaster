@@ -1,6 +1,8 @@
 # Build a Paymaster on Solana using Turnkey
 
-Want to pay for gas on behalf of your users? Don't want to be a money transmitter?Lucky you! This guide will walk you through the process of using Turnkey's API with Solana Web3 JS to build a transaction whose fee will be paid by a Turnkey wallet you control and send it to your backend endpoint. Your backend endpoint will then request a signature from Turnkey. The fully signed transaction can finally be broadcast to the Solana network for execution.
+Want to pay for gas on behalf of your users? Don't want to be a money transmitter? Lucky you! This guide will walk you through the process of using Turnkey's API with Solana Web3 JS to build a transaction whose fee will be paid by a Turnkey wallet you control and send it to your backend. Your backend will then request a signature from Turnkey and return it to the client. The fully signed transaction can finally be broadcast to the Solana network for execution.
+
+All example code is included including some utilities I used in my project. (such as Helius' RPC proxy)
 
 ## Prerequisites
 
@@ -13,19 +15,19 @@ Before you begin, make sure you have the following:
 ![alt text](image-1.png)
 - Install dependencies:
 
-Frontend:
+### Frontend:
 ```
 npm i @solana/web3.js
 ```
 
-Backend:
+### Backend:
 ```
 npm i @solana/web3.js @turnkey/solana @turnkey/sdk-server
 ```
 
 ## Step 1: Frontend Implementation
 
-In this example we'll do a simple SPL token send from A -> B and have our Turnkey paymaster pay the network fee. In your frontend code, build the transaction. 
+In this example we'll do a simple SPL token send from user A -> user B and have our Turnkey paymaster pay the network fee. In your frontend code, build the transaction. 
 
 ```typescript
     const transaction = new Transaction().add(
@@ -115,7 +117,7 @@ app.post("/paymaster", authenticateRequest, async (req, res) => {
 })
 ```
 
-## Step 3: Back to Front End
+## Step 3: Receive and Broadcast the Completed Transaction
 Receive the full signed serialized transaction from your backend:
 
 ```typescript
